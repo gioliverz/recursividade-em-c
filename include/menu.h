@@ -12,6 +12,8 @@ void exibir_filtro(void); //gi: que que vcs acham de add isso?
 // MENU DE TAREFAS
 void menu_cadastrar_tarefa (Tarefa** lista_geral);
 
+// MENU SUBTAREFAS
+// void exibir_menu_subtarefas ( )
 
 
 
