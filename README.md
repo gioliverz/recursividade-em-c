@@ -55,10 +55,10 @@ recursividade-em-c/
 * **Tarefa:** Entidade principal contendo `id`, `descricao`, `prazo` (Data), `prioridade`, `percentual_conclusao`, vetor estático de `subtarefas` e contador `qtd_subtarefas`.
 
 ### `Menu.h`
-**Menu Principal** (exibir_menu_principal / executar_opcao): Renderiza as opções centrais do sistema no terminal e direciona o fluxo de execução com base na escolha do usuário.   
-**Cadastro e Gerenciamento de Tarefas** (exibir_menu_tarefas / menu_cadastrar_tarefa): Exibe as opções de gerenciamento de tarefas e coleta interativamente os dados necessários (descrição, prazo e prioridade) para criar uma nova tarefa.   
-**Gerenciamento de Subtarefas** (exibir_menu_subtarefas): Interface dedicada para incluir, remover e atualizar o progresso das sub-ações vinculadas a uma tarefa pai.  
-**Filtros e Ordenação**(exibir_filtro / menu_filtrar_tarefas): Interface para filtrar e reorganizar a exibição das tarefas por critérios específicos, como nível de prioridade ou data limite. 
+**Menu Principal** (`exibir_menu_principal` / `executar_opcao`): Renderiza as opções centrais do sistema no terminal e direciona o fluxo de execução com base na escolha do usuário.   
+**Cadastro e Gerenciamento de Tarefas** (`exibir_menu_tarefas` / `menu_cadastrar_tarefa`): Exibe as opções de gerenciamento de tarefas e coleta interativamente os dados necessários (descrição, prazo e prioridade) para criar uma nova tarefa.   
+**Gerenciamento de Subtarefas** (`exibir_menu_subtarefas`): Interface dedicada para incluir, remover e atualizar o progresso das sub-ações vinculadas a uma tarefa pai.  
+**Filtros e Ordenação**(`exibir_filtro`/ `menu_filtrar_tarefas`): Interface para filtrar e reorganizar a exibição das tarefas por critérios específicos, como nível de prioridade ou data limite. 
 
 
 ### arquivos.h
