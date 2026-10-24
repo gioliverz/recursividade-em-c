@@ -1,22 +1,22 @@
-# Gerenciador de Tarefas com Subtarefas 📝
+# Gerenciador de Tarefas com Subtarefas 
 
 **Disciplina:** Algoritmos e Programação de Computadores II  
 **Tema T5:** Gerenciador de Tarefas com Subtarefas  
-**Data:** 01/10/2026  
+
 
 ---
 
-## 👥 Integrantes e RAs
+##  Integrantes e RAs
 
-* **Giovana Oliveira Geraldo** — RA: 308756
-* **Izabela da Silva Lopes** — RA: 308773
-* **Kauanny Vitória de Souza Fernandes** — RA: 308785
-* **Letícia Gomes Santos** — RA: 308790
-* **Letícia Gonçalves Ferreira** — RA: 308791
+* **Giovana Oliveira Geraldo**
+* **Izabela da Silva Lopes** 
+* **Kauanny Vitória de Souza Fernandes**
+* **Letícia Gomes Santos**
+* **Letícia Gonçalves Ferreira**
 
 ---
 
-## 📌 Sobre o Projeto
+## Sobre o Projeto
 
 O **Gerenciador de Tarefas com Subtarefas** é um sistema desenvolvido em C focado no gerenciamento hierárquico de tarefas principais e suas respectivas sub-ações (subtarefas). 
 
@@ -28,7 +28,7 @@ O **Gerenciador de Tarefas com Subtarefas** é um sistema desenvolvido em C foca
 
 ---
 
-## 📁 Estrutura do Repositório
+##  Estrutura do Repositório
 
 ```text
 recursividade-em-c/
@@ -44,38 +44,6 @@ recursividade-em-c/
 ├── Makefile            # Script de automação de compilação
 └── README.md           # Documentação do projeto
 ```
-
----
-
-## 🛠️ Como Compilar e Executar
-
-### Pré-requisitos
-* Compilador **GCC** instalado.
-* Utilitário **Make** (Linux/macOS) ou **MinGW Make** (Windows).
-
-### Comandos do Makefile
-
-* **Compilar o projeto:**
-  ```bash
-  make
-  ```
-
-* **Compilar e executar o programa diretamente:**
-  ```bash
-  make run
-  ```
-
-* **Limpar arquivos objeto e executáveis gerados:**
-  ```bash
-  make clean
-  ```
-
-* **Recompilar totalmente do zero:**
-  ```bash
-  make rebuild
-  ```
-
----
 
 ## ⚙️ Regras de Negócio e Estrutura de Dados
 
