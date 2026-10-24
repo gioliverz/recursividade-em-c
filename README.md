@@ -47,13 +47,14 @@ recursividade-em-c/
 
 ##  Regras de Negócio e Estrutura de Dados
 
-### Estruturas Principais (`tarefas.h`)
+### Estruturas Principais 
+### `tarefas.h`
 * **Data:** Contém `dia`, `mes` e `ano`.
 * **Prioridade:** Mapeamento em `1 (Baixa)`, `2 (Média)` e `3 (Alta)`.
 * **Subtarefa:** Possui `id`, `descricao`, status `concluida` (0 ou 1) e `id_tarefa_pai`.
 * **Tarefa:** Entidade principal contendo `id`, `descricao`, `prazo` (Data), `prioridade`, `percentual_conclusao`, vetor estático de `subtarefas` e contador `qtd_subtarefas`.
 
-### Menu.h
+### `Menu.h`
 **Menu Principal** (exibir_menu_principal / executar_opcao): Renderiza as opções centrais do sistema no terminal e direciona o fluxo de execução com base na escolha do usuário.   
 **Cadastro e Gerenciamento de Tarefas** (exibir_menu_tarefas / menu_cadastrar_tarefa): Exibe as opções de gerenciamento de tarefas e coleta interativamente os dados necessários (descrição, prazo e prioridade) para criar uma nova tarefa.   
 **Gerenciamento de Subtarefas** (exibir_menu_subtarefas): Interface dedicada para incluir, remover e atualizar o progresso das sub-ações vinculadas a uma tarefa pai.  
