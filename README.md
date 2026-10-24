@@ -45,3 +45,10 @@ recursividade-em-c/
 └── README.md           # Documentação do projeto
 ```
 
+##  Regras de Negócio e Estrutura de Dados
+
+### Estruturas Principais (`tarefas.h`)
+* **Data:** Contém `dia`, `mes` e `ano`.
+* **Prioridade:** Mapeamento em `1 (Baixa)`, `2 (Média)` e `3 (Alta)`.
+* **Subtarefa:** Possui `id`, `descricao`, status `concluida` (0 ou 1) e `id_tarefa_pai`.
+* **Tarefa:** Entidade principal contendo `id`, `descricao`, `prazo` (Data), `prioridade`, `percentual_conclusao`, vetor estático de `subtarefas` e contador `qtd_subtarefas`.
