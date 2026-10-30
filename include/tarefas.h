@@ -1,5 +1,9 @@
 #ifndef TAREFAS_H
 #define TAREFAS_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 // Estrutura Data
 typedef struct {

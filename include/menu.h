@@ -5,7 +5,7 @@
 
 // MENU PRINCIPAL
 void exibir_menu_principal(void);
-void executar_opcao(int opcao);
+void executar_opcao_principal(int opcao);
 void exibir_menu_tarefas(void);
 void exibir_filtro(void); //gi: que que vcs acham de add isso?
 
