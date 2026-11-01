@@ -319,7 +319,7 @@ void ordenacao_por_prioridade(Tarefa** lista){
 }
 
 void ordenacao_por_prazo(Tarefa** lista_geral){
-    if (lista_geral = NULL || *lista_geral == NULL)
+    if (lista_geral == NULL || *lista_geral == NULL)
         return;
     int trocou;
     Tarefa* atual;
@@ -338,3 +338,22 @@ void ordenacao_por_prazo(Tarefa** lista_geral){
     } while (trocou);
 }
 
+// --- Gestão de memória dinâmica ---
+
+void liberar_todas_tarefas(Tarefa** lista){
+    if (lista == NULL || *lista == NULL)
+        return;
+    Tarefa* atual = *lista;
+    Tarefa* proxima_tarefa;
+    while (atual!= NULL) {
+        proxima_tarefa = atual->proxima;
+        free(atual);
+        atual = proxima_tarefa;
+    }
+    *lista = NULL; // garantir que a lista esteja vazia (evitar ponteiro fantasma)
+}
+
+/* OBS: A função liberar_subtarefas não foi implementada, pois
+as subtarefas ficam guardadas dentro de um vetor estático dentro
+da struct Tarefa, então não há necessidade de liberar memória 
+separadamente (já são excluídas quando a tarefa pai é liberada). */
