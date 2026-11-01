@@ -51,13 +51,13 @@ typedef struct Tarefa {
 // --- Gestão Geral de Tarefas ---
 Tarefa* criar_tarefa(int id, const char* descricao, const char* prazo, int prioridade);
 int remover_tarefa(Tarefa** lista_geral, int id_tarefa);
-int editar_tarefa(Tarefa* lista, int id_tarefa, const char* nova_descricao, const char* novo_prazo, int nova_prioridade);
+int editar_tarefa(Tarefa* lista, const char* nova_descricao, const char* novo_prazo, int nova_prioridade);
 void listar_tarefas(const Tarefa* lista);
 
 // --- Gestão de Subtarefas ---
 int criar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* descricao, int conclusao);
 int remover_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa);
-int editar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* nova_descricao, float nova_conclusao);
+int editar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* nova_descricao, int nova_conclusao);
 void listar_sub(const Tarefa* lista);
 
 // --- Cálculo do Progresso e Atualização ---
