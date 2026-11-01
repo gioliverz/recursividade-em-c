@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Na linha 229 preciso da opinião de vocês sobre a estrutura de uma das funções
+
 // -- Funções para manipulação de datas --
 Data criar_data(int dia, int mes, int ano){
     Data d;
@@ -79,22 +81,9 @@ Tarefa* criar_tarefa(int id, const char* descricao, const char* prazo, int prior
     return nova_tarefa;
 }
 
-// Localizar uma tarefa na lista encadeada pelo ID
-Tarefa* buscar_tarefa_por_id(Tarefa* raiz_ou_lista, int id){
-    Tarefa* atual = raiz_ou_lista;
-    // percorrer a lista
-    while (atual != NULL) {
-        if (atual->id == id) {
-            return atual; // encontrou a tarefa correta
-        }
-        atual = atual->proxima; // avança para a próxima tarefa da lista
-    }
-    return NULL; // percorreu tudo e não achou
-}
-
 // Remover uma tarefa da lista pelo id e liberar memória
-int remover_tarefa(Tarefa** raiz_ou_lista, int id){
-    Tarefa* atual = *raiz_ou_lista;
+int remover_tarefa(Tarefa** lista_geral, int id){
+    Tarefa* atual = *lista_geral;
     Tarefa* anterior = NULL;
     
     while (atual != NULL && atual->id != id) {
@@ -107,7 +96,7 @@ int remover_tarefa(Tarefa** raiz_ou_lista, int id){
     }
     // a tarefa a ser removida é a primeira da lista
     if (anterior == NULL) {
-        *raiz_ou_lista = atual->proxima; // raiz passa a ser a segunda tarefa
+        *lista_geral = atual->proxima; // raiz passa a ser a segunda tarefa
     } else {
         anterior->proxima = atual->proxima; // contorna o elemento removido
     }
@@ -134,5 +123,137 @@ int editar_tarefa(Tarefa* tarefa, const char* nova_descricao, const char* novo_p
     return 1; // atualização bem-sucedida
 }
 
+// Listar todas as tarefas da lista encadeada
+void listar_tarefas(const Tarefa* lista){
+    const Tarefa* atual = lista;
+    if (atual == NULL) {
+        printf("Nenhuma tarefa cadastrada.\n");
+        return;
+    }
+    printf("--- Lista de Tarefas Principais ---\n");
+    while (atual != NULL) {
+        printf("ID: %d | Descrição: %s | Prazo: %02d/%02d/%d | Progresso: %.1f%%\n", atual->id,atual->descricao,atual->prazo,atual->porcentagem_conclusao);
+        atual = atual->proxima;
+    }
+}
+
 // -- Gestão de subtarefas --
 
+// Adicionar uma subtarefa a uma tarefa existente
+int criar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* descricao, int conclusao){
+    // procurar a tarefa pai
+    Tarefa* pai = buscar_tarefa_por_id(lista, id_tarefa_pai);
+    if (pai == NULL) {
+        return 0; // tarefa pai não foi encontrada
+    }
+    // validar o limite de subtarefas
+    if (pai->qtd_subtarefas >= 10) {
+        printf("Aviso: Limite maximo de 10 subtarefas atingido para esta tarefa.\n");
+        return 0;
+    }
+    // inserir a nova subtarefa na posição correta
+    int indice = pai->qtd_subtarefas;
+    pai->subtarefas[indice].id = indice + 1; // id sequencial local
+    strncpy(pai->subtarefas[indice].descricao, descricao, 99);
+    pai->subtarefas[indice].descricao[99] = '\0';
+    pai->subtarefas[indice].concluida = 0; // tarefa está pendente
+    pai->subtarefas[indice].id_tarefa_pai = id_tarefa_pai;
+    // incrementar o contador de subtarefas
+    pai->qtd_subtarefas++;
+    // atualizar o progresso usando a função recursiva
+    pai->porcentagem_conclusao = calcular_progressao(pai,0,0);
+    
+    return 1; // subtarefa adicionada com sucesso
+}
+
+// Remover uma subtarefa
+int remover_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa){
+    Tarefa* pai = buscar_tarefa_por_id(lista, id_tarefa_pai);
+    if (pai == NULL)
+        return 0; // tarefa pai não encontrada
+    int encontrada = -1;
+    // procurar o índice da subtarefa pelo id
+    for (int i = 0; i < pai->qtd_subtarefas; i++) {
+        if (pai->subtarefas[i].id == id_subtarefa) {
+            encontrada = i;
+            break;
+        }
+    }
+    if (encontrada == -1)
+        return 0; // subtarefa não encontrada
+    // reorganizar as subtarefas
+    for (int i = encontrada; i < pai->qtd_subtarefas - 1; i++) {
+        pai->subtarefas[i] = pai->subtarefas[i+1];
+    }
+    // reduzir a quantidade de subtarefas
+    pai->qtd_subtarefas--;
+    // atualizar o progresso
+    pai->porcentagem_conclusao = calcular_progressao(pai,0,0);
+
+    return 1; // subtarefa removida com sucesso
+}
+
+// Alterar dados de uma subtarefa e atualizar o progresso
+int editar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* nova_descricao, int nova_conclusao){
+    Tarefa* pai = buscar_tarefa_por_id(lista, id_tarefa_pai);
+    if (pai == NULL)
+        return 0;
+    
+    for (int i = 0; i< pai->qtd_subtarefas; i++) {
+        if (pai->subtarefas[i].id == id_subtarefa) {
+            strncpy(pai->subtarefas[i].descricao, nova_descricao, 99);
+            pai->subtarefas[i].descricao[99] = '\0';
+            pai->subtarefas[i].concluida = (nova_conclusao == 1) ? 1 : 0; // garantir valor booleano
+            pai->porcentagem_conclusao = calcular_progressao(pai,0,0);
+
+            return 1; // subtarefa editada com sucesso
+        }
+    }
+    return 0; // subtarefa não encontrada
+}
+
+void listar_sub(const Tarefa* lista){
+    if (lista == NULL)
+        return;
+    if (lista->qtd_subtarefas == 0) {
+        printf("Esta tarefa nao possui subtarefas.\n");
+        return;
+    }
+    printf("--- Subtarefas da Tarefa ID %d ---\n", lista->id);
+    for (int i = 0; i < lista->qtd_subtarefas; i++) {
+        printf(" ID Subtarefa: %d | Descricao: %s | Status: %s\n",lista->subtarefas[i].id,lista->subtarefas[i].descricao,lista->subtarefas[i].concluida == 1 ? "Concluida" : "Pendente");
+    }
+}
+
+// --- Calculo do progresso e atualização ---
+
+// Algoritmo recursivo para calcular o percentual de conclusão das subtarefas
+float calcular_progressao(Tarefa* tarefa, int indice, int concluidas){     // alterei a estrutura dos parâmetros, vejam se concordam !!
+    // caso base: a tarefa não tem subtarefas
+    if(tarefa->qtd_subtarefas == 0)
+        return 0.0f; // sem subtarefas, progresso é 0%
+    if (indice == tarefa->qtd_subtarefas) {     // caso base de parada (fim do vetor)
+        return ((float)concluidas / tarefa-> qtd_subtarefas) * 100.0f; // conversão de tipo
+    }
+    // caso recursivo: se a subtarefa atual estiver concluída, soma 1
+    if (tarefa->subtarefas[indice].concluida == 1) {
+        concluidas++;
+    }
+    // avança para o próximo índice
+    return calcular_progressao(tarefa, indice + 1, concluidas);
+}
+
+// --- Filtro de tarefas ---
+
+// Localizar uma tarefa na lista encadeada pelo ID
+Tarefa* buscar_tarefa_por_id(Tarefa* lista_geral, int id){
+    Tarefa* atual = lista_geral;
+    // percorrer a lista
+    while (atual != NULL) {
+        if (atual->id == id) {
+            return atual; // encontrou a tarefa correta
+        }
+        atual = atual->proxima; // avança para a próxima tarefa da lista
+    }
+    return NULL; // percorreu tudo e não achou
+}
