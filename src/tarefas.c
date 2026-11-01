@@ -263,3 +263,78 @@ Tarefa* buscar_tarefa_por_id(Tarefa* lista_geral, int id){
     }
     return NULL; // percorreu tudo e não achou
 }
+
+// Função auxiliar para inverter o conteúdo de duas tarefas
+void trocar_dados_tarefas(Tarefa* a, Tarefa* b){
+    int aux_id = a->id;
+    a->id = b->id;
+    b->id = aux_id;
+
+    float temp_prog = a->porcentagem_conclusao;
+    a->porcentagem_conclusao = b->porcentagem_conclusao;
+    b->porcentagem_conclusao = temp_prog;
+
+    int aux_qtd = a->qtd_subtarefas;
+    a->qtd_subtarefas = b->qtd_subtarefas;
+    b->qtd_subtarefas = aux_qtd;
+
+    int aux_prioridade = a->prioridade;
+    a->prioridade = b->prioridade;
+    b->prioridade = aux_prioridade;
+
+    Data temp_prazo = a->prazo;
+    a->prazo = b->prazo;
+    b->prazo = temp_prazo;
+
+    char temp_desc[100];
+    strcpy(temp_desc, a->descricao);
+    strcpy(a->descricao, b->descricao);
+    strcpy(b->descricao, temp_desc);
+
+    for (int i = 0; i < 10; i++) {
+        Subtarefa temp_sub = a->subtarefas[i];
+        a->subtarefas[i] = b->subtarefas[i];
+        b->subtarefas[i] = temp_sub;
+    }
+}
+
+void ordenacao_por_prioridade(Tarefa** lista){
+    if (lista == NULL || *lista == NULL)
+        return;
+    int trocou;
+    Tarefa* atual;
+    Tarefa* ultimo_verificado = NULL;
+    do {
+        trocou = 0;
+        atual = *lista;
+        while (atual->proxima != ultimo_verificado) {
+            if (atual->prioridade < atual->proxima->prioridade) {
+                trocar_dados_tarefas(atual, atual->proxima);
+                trocou = 1;
+            }
+            atual = atual->proxima;
+        }
+        ultimo_verificado = atual;
+    } while (trocou);
+}
+
+void ordenacao_por_prazo(Tarefa** lista_geral){
+    if (lista_geral = NULL || *lista_geral == NULL)
+        return;
+    int trocou;
+    Tarefa* atual;
+    Tarefa* ultimo_verificado = NULL;
+    do {
+        trocou = 0;
+        atual = *lista_geral;
+        while (atual->proxima != ultimo_verificado) {
+            if(comparar_datas(atual->prazo,atual->proxima->prazo) > 0) {
+                trocar_dados_tarefas(atual,atual->proxima);
+                trocou = 1;
+            }
+            atual = atual->proxima;
+        }
+        ultimo_verificado = atual;
+    } while (trocou);
+}
+
