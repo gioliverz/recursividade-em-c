@@ -243,6 +243,12 @@ float calcular_progressao(Tarefa* tarefa, int indice, int concluidas){     // al
     return calcular_progressao(tarefa, indice + 1, concluidas);
 }
 
+void atualizaConclusao(Tarefa* tarefa, const Subtarefa* sub){
+    if (tarefa == NULL)
+        return;
+    tarefa->porcentagem_conclusao = calcular_progressao(tarefa,0,0);
+}
+
 // --- Filtro de tarefas ---
 
 // Localizar uma tarefa na lista encadeada pelo ID
