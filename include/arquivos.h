@@ -1,7 +1,7 @@
 #ifndef ARQUIVOS_H
 #define ARQUIVOS_H
 
-#include "../include/arquivos.h"
+#include "tarefas.h"
 #define NOME_ARQUIVO "tarefas.txt"
 
 // Protótipos das funções que manipulam arquivos
