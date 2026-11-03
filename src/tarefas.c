@@ -1,5 +1,4 @@
-#include "tarefas.h"
-
+#include "../include/tarefas.h"
 
 // FUNÇÕES AUXILIARES DE DATAS:
 Data criar_data(int dia, int mes, int ano) {
@@ -15,7 +14,8 @@ int validar_data(Data d) {
     if (d.mes < 1 || d.mes > 12) return 0;
     
     int dias_mes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    
+    // último dia do mês de fevereiro depende se o ano é bissexto
+
     // Ano bissexto
     int bissexto = (d.ano % 4 == 0 && d.ano % 100 != 0) || (d.ano % 400 == 0);
     if (bissexto) {
