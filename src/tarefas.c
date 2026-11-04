@@ -1,6 +1,25 @@
-#include "../include/tarefas.h"
+/**
+ * ============================================================================
+ * PROJETO PRÁTICO INTEGRADOR — TEMA T5: Gerenciador de Tarefas com Subtarefas
+ * Diretório: recursividade-em-c/src/tarefas.c
+ * Módulo 2: Implementação da Lógica de Negócios, Listas Encadeadas e Recursão
+ * ============================================================================
+ */
 
-// FUNÇÕES AUXILIARES DE DATAS:
+#ifdef __has_include
+  #if __has_include("../include/tarefas.h")
+    #include "../include/tarefas.h"
+  #else
+    #include "tarefas.h"
+  #endif
+#else
+  #include "../include/tarefas.h"
+#endif
+
+/* ============================================================================
+ * FUNÇÕES AUXILIARES DE DATAS
+ * ============================================================================ */
+
 Data criar_data(int dia, int mes, int ano) {
     Data d;
     d.dia = dia;
@@ -14,9 +33,6 @@ int validar_data(Data d) {
     if (d.mes < 1 || d.mes > 12) return 0;
     
     int dias_mes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    // último dia do mês de fevereiro depende se o ano é bissexto
-
-    // Ano bissexto
     int bissexto = (d.ano % 4 == 0 && d.ano % 100 != 0) || (d.ano % 400 == 0);
     if (bissexto) {
         dias_mes[2] = 29;
@@ -26,22 +42,19 @@ int validar_data(Data d) {
     return 1;
 }
 
-int parse_data(const char* str_prazo, Data* resultado) {
-    if (str_prazo == NULL || resultado == NULL) return 0;
-
+Data parse_data(const char* str_prazo) {
+    Data d = {1, 1, 2026};
+    if (str_prazo == NULL) return d;
+    
     int dia = 0, mes = 0, ano = 0;
-    char extra;
-    int lidos = sscanf(str_prazo, "%d/%d/%d %c", &dia, &mes, &ano, &extra);
-    if (lidos != 3) {
-        lidos = sscanf(str_prazo, "%d-%d-%d %c", &dia, &mes, &ano, &extra);
+    if (sscanf(str_prazo, "%d/%d/%d", &dia, &mes, &ano) == 3 ||
+        sscanf(str_prazo, "%d-%d-%d", &dia, &mes, &ano) == 3) {
+        Data temp = {dia, mes, ano};
+        if (validar_data(temp)) {
+            return temp;
+        }
     }
-    if (lidos != 3) return 0;
-
-    Data temp = {dia, mes, ano};
-    if (!validar_data(temp)) return 0;
-
-    *resultado = temp;
-    return 1;
+    return d;
 }
 
 int comparar_datas(Data d1, Data d2) {
@@ -69,25 +82,21 @@ Tarefa* criar_tarefa(int id, const char* descricao, const char* prazo, int prior
     nova->id = id;
     
     if (descricao != NULL) {
-        strncpy(nova->descricao, descricao, sizeof(nova->descricao) - 1);
-        nova->descricao[sizeof(nova->descricao) - 1] = '\0';
+        strncpy(nova->descricao, descricao, 100);
+        nova->descricao[100] = '\0';
     } else {
         strcpy(nova->descricao, "Sem descrição");
     }
 
-    if (!parse_data(prazo, &nova->prazo)) {
-        fprintf(stderr, "Erro: prazo inválido. Use DD/MM/AAAA ou DD-MM-AAAA.\n");
-        free(nova);
-        return NULL;
-    }
+    nova->prazo = parse_data(prazo);
 
     if (prioridade < PRIORIDADE_BAIXA || prioridade > PRIORIDADE_ALTA) {
-        nova->prioridade = PRIORIDADE_BAIXA; // Padrão conforme escopo
+        nova->prioridade = PRIORIDADE_BAIXA;
     } else {
         nova->prioridade = prioridade;
     }
 
-    nova->porcentagem_conclusao = 0.0f;
+    nova->percentual_conclusao = 0.0f;
     nova->qtd_subtarefas = 0;
     nova->subtarefas = NULL;
     nova->proxima = NULL;
@@ -97,7 +106,7 @@ Tarefa* criar_tarefa(int id, const char* descricao, const char* prazo, int prior
 
 int remover_tarefa(Tarefa** lista_geral, int id_tarefa) {
     if (lista_geral == NULL || *lista_geral == NULL) {
-        return 0; // Lista vazia
+        return 0;
     }
 
     Tarefa* atual = *lista_geral;
@@ -109,21 +118,19 @@ int remover_tarefa(Tarefa** lista_geral, int id_tarefa) {
     }
 
     if (atual == NULL) {
-        return 0; // Tarefa com ID especificado não encontrada
+        return 0;
     }
 
-    // Desconecta da lista principal
     if (anterior == NULL) {
         *lista_geral = atual->proxima;
     } else {
         anterior->proxima = atual->proxima;
     }
 
-    // Libera recursivamente toda a lista encadeada de subtarefas da tarefa
     liberar_subtarefas(atual->subtarefas);
     free(atual);
 
-    return 1; // Removida com sucesso
+    return 1;
 }
 
 int editar_tarefa(Tarefa* lista, int id_tarefa, const char* nova_descricao, const char* novo_prazo, int nova_prioridade) {
@@ -132,18 +139,17 @@ int editar_tarefa(Tarefa* lista, int id_tarefa, const char* nova_descricao, cons
         return 0;
     }
 
-    Data prazo;
-    int atualizar_prazo = novo_prazo != NULL && strlen(novo_prazo) > 0;
-    if (atualizar_prazo && !parse_data(novo_prazo, &prazo)) {
-        return 0;
-    }
-
     if (nova_descricao != NULL && strlen(nova_descricao) > 0) {
-        strncpy(t->descricao, nova_descricao, sizeof(t->descricao) - 1);
-        t->descricao[sizeof(t->descricao) - 1] = '\0';
+        strncpy(t->descricao, nova_descricao, 100);
+        t->descricao[100] = '\0';
     }
 
-    if (atualizar_prazo) t->prazo = prazo;
+    if (novo_prazo != NULL && strlen(novo_prazo) > 0) {
+        Data d = parse_data(novo_prazo);
+        if (validar_data(d)) {
+            t->prazo = d;
+        }
+    }
 
     if (nova_prioridade >= PRIORIDADE_BAIXA && nova_prioridade <= PRIORIDADE_ALTA) {
         t->prioridade = nova_prioridade;
@@ -172,7 +178,7 @@ void listar_tarefas(const Tarefa* lista) {
                                (t->prioridade == PRIORIDADE_MEDIA) ? "Media" : "Baixa";
 
         printf("%-4d | %-30.30s | %-10s | %-10s | %6.1f%%    | %d/%d\n",
-               t->id, t->descricao, data_str, prio_txt, t->porcentagem_conclusao,
+               t->id, t->descricao, data_str, prio_txt, t->percentual_conclusao,
                t->qtd_subtarefas, MAX_SUBTAREFAS);
         
         t = t->proxima;
@@ -187,12 +193,11 @@ void listar_tarefas(const Tarefa* lista) {
 int criar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* descricao, int conclusao) {
     Tarefa* pai = busca_ID(lista, id_tarefa_pai);
     if (pai == NULL) {
-        return 0; // Tarefa mãe não encontrada
+        return 0;
     }
 
-    // Regra do escopo: limite máximo de 10 subtarefas
     if (pai->qtd_subtarefas >= MAX_SUBTAREFAS) {
-        return -1; // Limite excedido
+        return -1;
     }
 
     Subtarefa* nova = (Subtarefa*)malloc(sizeof(Subtarefa));
@@ -202,18 +207,17 @@ int criar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* de
 
     nova->id = id_subtarefa;
     nova->id_tarefa_pai = id_tarefa_pai;
-    nova->concluida = (conclusao == 1) ? 1 : 0; // Padrão 0 conforme escopo
+    nova->concluida = (conclusao == 1) ? 1 : 0;
     
     if (descricao != NULL) {
-        strncpy(nova->descricao, descricao, sizeof(nova->descricao) - 1);
-        nova->descricao[sizeof(nova->descricao) - 1] = '\0';
+        strncpy(nova->descricao, descricao, 100);
+        nova->descricao[100] = '\0';
     } else {
         strcpy(nova->descricao, "Subtarefa");
     }
 
     nova->proxima = NULL;
 
-    // Inserção no final da lista encadeada de subtarefas para manter a ordem sequencial
     if (pai->subtarefas == NULL) {
         pai->subtarefas = nova;
     } else {
@@ -225,8 +229,6 @@ int criar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* de
     }
 
     pai->qtd_subtarefas++;
-
-    // Gatilho obrigatório: recalcular progresso recursivamente
     atualizaConclusao(pai, pai->subtarefas);
 
     return 1;
@@ -247,7 +249,7 @@ int remover_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa) {
     }
 
     if (atual == NULL) {
-        return 0; // Subtarefa não encontrada
+        return 0;
     }
 
     if (anterior == NULL) {
@@ -258,8 +260,6 @@ int remover_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa) {
 
     free(atual);
     pai->qtd_subtarefas--;
-
-    // Recalcula progresso após a remoção
     atualizaConclusao(pai, pai->subtarefas);
 
     return 1;
@@ -281,16 +281,14 @@ int editar_sub(Tarefa* lista, int id_tarefa_pai, int id_subtarefa, const char* n
     }
 
     if (nova_descricao != NULL && strlen(nova_descricao) > 0) {
-        strncpy(s->descricao, nova_descricao, sizeof(s->descricao) - 1);
-        s->descricao[sizeof(s->descricao) - 1] = '\0';
+        strncpy(s->descricao, nova_descricao, 100);
+        s->descricao[100] = '\0';
     }
 
-    // Conclusão: aceita 1/0 ou valores >= 0.5 como 1
     if (nova_conclusao >= 0.0f) {
         s->concluida = (nova_conclusao >= 0.5f) ? 1 : 0;
     }
 
-    // Gatilho obrigatório de recálculo recursivo
     atualizaConclusao(pai, pai->subtarefas);
     return 1;
 }
@@ -333,7 +331,7 @@ Tarefa* busca_ID(Tarefa* lista, int id_tarefa) {
 
 void ordenacao_por_prioridade(Tarefa** lista) {
     if (lista == NULL || *lista == NULL || (*lista)->proxima == NULL) {
-        return; // Lista vazia ou com 1 elemento
+        return;
     }
 
     int trocou;
@@ -345,35 +343,30 @@ void ordenacao_por_prioridade(Tarefa** lista) {
         atual = *lista;
 
         while (atual->proxima != ultimo_verificado) {
-            // Ordena decrescente: Alta (3) > Media (2) > Baixa (1)
             if (atual->prioridade < atual->proxima->prioridade) {
-                // Troca os dados do payload entre os nós para manter ponteiros estáveis
                 Tarefa temp;
                 
-                // Copia temporária dos campos de dados
                 temp.id = atual->id;
-                memcpy(temp.descricao, atual->descricao, sizeof(temp.descricao));
+                strncpy(temp.descricao, atual->descricao, 101);
                 temp.prazo = atual->prazo;
                 temp.prioridade = atual->prioridade;
-                temp.porcentagem_conclusao = atual->porcentagem_conclusao;
+                temp.percentual_conclusao = atual->percentual_conclusao;
                 temp.qtd_subtarefas = atual->qtd_subtarefas;
                 temp.subtarefas = atual->subtarefas;
 
-                // Atual recebe próximo
                 atual->id = atual->proxima->id;
-                memcpy(atual->descricao, atual->proxima->descricao, sizeof(atual->descricao));
+                strncpy(atual->descricao, atual->proxima->descricao, 101);
                 atual->prazo = atual->proxima->prazo;
                 atual->prioridade = atual->proxima->prioridade;
-                atual->porcentagem_conclusao = atual->proxima->porcentagem_conclusao;
+                atual->percentual_conclusao = atual->proxima->percentual_conclusao;
                 atual->qtd_subtarefas = atual->proxima->qtd_subtarefas;
                 atual->subtarefas = atual->proxima->subtarefas;
 
-                // Próximo recebe temp
                 atual->proxima->id = temp.id;
-                memcpy(atual->proxima->descricao, temp.descricao, sizeof(atual->proxima->descricao));
+                strncpy(atual->proxima->descricao, temp.descricao, 101);
                 atual->proxima->prazo = temp.prazo;
                 atual->proxima->prioridade = temp.prioridade;
-                atual->proxima->porcentagem_conclusao = temp.porcentagem_conclusao;
+                atual->proxima->percentual_conclusao = temp.percentual_conclusao;
                 atual->proxima->qtd_subtarefas = temp.qtd_subtarefas;
                 atual->proxima->subtarefas = temp.subtarefas;
 
@@ -399,31 +392,30 @@ void ordenarcao_por_prazo(Tarefa** lista_geral) {
         atual = *lista_geral;
 
         while (atual->proxima != ultimo_verificado) {
-            // Ordena crescente por prazo: mais urgente (menor data) primeiro
             if (comparar_datas(atual->prazo, atual->proxima->prazo) > 0) {
                 Tarefa temp;
 
                 temp.id = atual->id;
-                memcpy(temp.descricao, atual->descricao, sizeof(temp.descricao));
+                strncpy(temp.descricao, atual->descricao, 101);
                 temp.prazo = atual->prazo;
                 temp.prioridade = atual->prioridade;
-                temp.porcentagem_conclusao = atual->porcentagem_conclusao;
+                temp.percentual_conclusao = atual->percentual_conclusao;
                 temp.qtd_subtarefas = atual->qtd_subtarefas;
                 temp.subtarefas = atual->subtarefas;
 
                 atual->id = atual->proxima->id;
-                memcpy(atual->descricao, atual->proxima->descricao, sizeof(atual->descricao));
+                strncpy(atual->descricao, atual->proxima->descricao, 101);
                 atual->prazo = atual->proxima->prazo;
                 atual->prioridade = atual->proxima->prioridade;
-                atual->porcentagem_conclusao = atual->proxima->porcentagem_conclusao;
+                atual->percentual_conclusao = atual->proxima->percentual_conclusao;
                 atual->qtd_subtarefas = atual->proxima->qtd_subtarefas;
                 atual->subtarefas = atual->proxima->subtarefas;
 
                 atual->proxima->id = temp.id;
-                memcpy(atual->proxima->descricao, temp.descricao, sizeof(atual->proxima->descricao));
+                strncpy(atual->proxima->descricao, temp.descricao, 101);
                 atual->proxima->prazo = temp.prazo;
                 atual->proxima->prioridade = temp.prioridade;
-                atual->proxima->porcentagem_conclusao = temp.porcentagem_conclusao;
+                atual->proxima->percentual_conclusao = temp.percentual_conclusao;
                 atual->proxima->qtd_subtarefas = temp.qtd_subtarefas;
                 atual->proxima->subtarefas = temp.subtarefas;
 
@@ -437,28 +429,18 @@ void ordenarcao_por_prazo(Tarefa** lista_geral) {
 
 /* ============================================================================
  * MECANISMO RECURSIVO DE CÁLCULO E ATUALIZAÇÃO
- *
- * Justificativa Acadêmica (conforme Seção 5 do Escopo):
- * A recursividade percorre a lista encadeada de subtarefas aproveitando a pilha
- * de execução do compilador. Cada frame acumula o peso relativo da subtarefa
- * (100.0f / total) quando concluída. Como cada tarefa possui no máximo
- * MAX_SUBTAREFAS (10 nós), a profundidade de recursão é O(N) com N <= 10,
- * garantindo ausência total de stack overflow e extrema clareza algorítmica.
  * ============================================================================ */
 
 float calculo_progresso(int id_tarefa_pai, const Tarefa* tarefa, const Subtarefa* sub) {
-    (void)id_tarefa_pai; // Compatibilidade com a assinatura do escopo
+    (void)id_tarefa_pai;
 
-    // Caso Base 1: Se a tarefa não possui subtarefas ou o ponteiro da lista é nulo
     if (tarefa == NULL || tarefa->qtd_subtarefas == 0 || sub == NULL) {
         return 0.0f;
     }
 
-    // Parcela de contribuição deste nó para o progresso geral
     float peso_por_subtarefa = 100.0f / (float)tarefa->qtd_subtarefas;
     float parcela_deste_no = (sub->concluida == 1) ? peso_por_subtarefa : 0.0f;
 
-    // Passo Recursivo: soma a parcela atual com a resolução recursiva do restante da lista ligada
     return parcela_deste_no + calculo_progresso(id_tarefa_pai, tarefa, sub->proxima);
 }
 
@@ -466,20 +448,21 @@ void atualizaConclusao(Tarefa* tarefa, const Subtarefa* sub) {
     if (tarefa == NULL) return;
 
     if (tarefa->qtd_subtarefas == 0 || tarefa->subtarefas == NULL) {
-        tarefa->porcentagem_conclusao = 0.0f;
+        tarefa->percentual_conclusao = 0.0f;
         return;
     }
 
     const Subtarefa* inicio = (sub != NULL) ? sub : tarefa->subtarefas;
-    tarefa->porcentagem_conclusao = calculo_progresso(tarefa->id, tarefa, inicio);
+    tarefa->percentual_conclusao = calculo_progresso(tarefa->id, tarefa, inicio);
 
-    // Arredondamento de precisão (evita 99.9999% por arredondamento de float)
-    if (tarefa->porcentagem_conclusao > 99.99f) {
-        tarefa->porcentagem_conclusao = 100.0f;
+    if (tarefa->percentual_conclusao > 99.99f) {
+        tarefa->percentual_conclusao = 100.0f;
     }
 }
 
-//GESTÃO DE MEMÓRIA DINÂMICA 
+/* ============================================================================
+ * GESTÃO DE MEMÓRIA DINÂMICA
+ * ============================================================================ */
 
 void liberar_subtarefas(Subtarefa* lista) {
     Subtarefa* atual = lista;
