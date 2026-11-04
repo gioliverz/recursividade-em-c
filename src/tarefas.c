@@ -1,4 +1,7 @@
-#include "../include/tarefas.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "tarefas.h"
 
 // FUNÇÕES AUXILIARES DE DATAS:
 Data criar_data(int dia, int mes, int ano) {

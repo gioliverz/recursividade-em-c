@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/arquivos.h"
+#include "arquivos.h"
 
 int salvar_tarefas_binario(const char* nome_arquivo, const Tarefa* lista) {
     FILE* arq = fopen(nome_arquivo, "wb");
