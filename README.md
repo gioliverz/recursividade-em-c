@@ -85,20 +85,22 @@ recursividade-em-c/
 
 ###  Compilação
 
-#### Opção 1: Usando o Makefile 
-Na raiz do projeto, execute o comando:
-` ```bash
-gcc -Iinclude src/*.c -o gerenciador_tarefas `
+### Opção 1: Usando algum terminal
 
-Após compilar, execute:
-
-no linux/macOS:
-
+No powershell, git bash, cmd ou qualquer outro terminal execute: 
+` gcc -Wall -Wextra -std=c99 -pedantic -g -Iinclude src/*.c -o gerenciador_tarefas `
 `./gerenciador_tarefas`
 
-no Windows:
+#### Opção 2: Usando o Makefile 
 
-`.\gerenciador_tarefas.exe`
+Antes de executar esses comandos "make", certifique-se de estar 
+na pasta correta. Exemplo: no terminal msys2, digite:
+
+cd /c/Users/SEU-USUÁRIO/Desktop/GerenciadorTarefasC
+
+execute `make run` para compilar e rodar
+execute o comando `make` só para compilar
+execute `make clean` para limpar/excluir os arquivos gerados
 
 ##  Instruções de Uso
 
