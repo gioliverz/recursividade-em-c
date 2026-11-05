@@ -322,7 +322,7 @@ void mostrar_detalhes_tarefa(Tarefa** lista_geral){
     printf("Descricao: %s\n",t->descricao);
     printf("Prazo: %s\n",buffer_data);
     printf("Prioridade: %d\n",t->prioridade);
-    printf("Progresso Atual: %.1f%%\n",t->porcentagem_conclusao);
+    printf("Progresso Atual: %.1f%%\n",t->percentual_conclusao);
     printf("Quantidade de Subtarefas: %d\n",t->qtd_subtarefas);
     printf("==========================================\n");
     pausar_tela();
@@ -356,8 +356,10 @@ void menu_exportar_agenda(Tarefa* lista){
     }
     // formatação segura do nome do arquivo
     sprintf(nome_arquivo_saida,"agenda_%04d-%02d-%02d.txt",data_busca.ano,data_busca.mes,data_busca.dia);
+    const char data_busca_string[11];
+    sprintf(data_busca_string,"%02d/%02d/%04d",data_busca.dia,data_busca.mes,data_busca.ano);
     printf("\nGerando relatorio em: %s ...\n",nome_arquivo_saida);
-    int sucesso = exportar_agenda_dia_txt(nome_arquivo_saida,lista,data_busca);
+    int sucesso = exportar_agenda_dia_txt(lista,data_busca_string,nome_arquivo_saida);
     if (sucesso) {
         exibir_mensagem("Agenda exportada com sucesso!");
     } else {
