@@ -99,7 +99,9 @@ na pasta correta. Exemplo: no terminal msys2, digite:
 cd /c/Users/SEU-USUÁRIO/Desktop/GerenciadorTarefasC
 
 execute `make run` para compilar e rodar
+
 execute o comando `make` só para compilar
+
 execute `make clean` para limpar/excluir os arquivos gerados
 
 ##  Instruções de Uso
