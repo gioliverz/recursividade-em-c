@@ -46,19 +46,74 @@ recursividade-em-c/
 ```
 
 
+## Estruturas Principais 
 
-### Estruturas Principais 
+
+### `arquivos.h`
+
+* **Estruturas de Serialização** (`RegistroTarefaDisco` / `RegistroSubtarefaDisco`): Define structs estáticas sem ponteiros com empacotamento (`#pragma pack`), garantindo a serialização segura e determinística das tarefas e subtarefas em arquivo binário.
+* **Persistência em Arquivo Binário** (`guardar_tarefas_binario` / `carregar_tarefas_binario` / `verificar_existencia_arquivo`): Salva a estrutura inteira de tarefas no disco em formato binário, restaura os dados para a memória RAM e verifica a existência prévia do arquivo.
+* **Exportação de Relatórios em Texto** (`exportar_agenda_dia_txt` / `exportar_relatorio_geral_txt`): Gera relatórios legíveis em formato `.txt`, permitindo a exportação de um resumo geral de todas as tarefas ou de uma agenda filtrada por data específica.
+* **Manipulação e Sanitização de Nomes** (`formatar_nome_arquivo_agenda`): Padroniza e trata a formatação dos nomes dos arquivos de relatórios, garantindo que as datas informadas gerem nomes de arquivo válidos no sistema operacional.
+
 ### `tarefas.h`
-* **Data:** Contém `dia`, `mes` e `ano`.
-* **Prioridade:** Mapeamento em `1 (Baixa)`, `2 (Média)` e `3 (Alta)`.
-* **Subtarefa:** Possui `id`, `descricao`, status `concluida` (0 ou 1) e `id_tarefa_pai`.
-* **Tarefa:** Entidade principal contendo `id`, `descricao`, `prazo` (Data), `prioridade`, `percentual_conclusao`, vetor estático de `subtarefas` e contador `qtd_subtarefas`.
 
-### `Menu.h`
-**Menu Principal** (`exibir_menu_principal` / `executar_opcao`): Renderiza as opções centrais do sistema no terminal e direciona o fluxo de execução com base na escolha do usuário.   
-**Cadastro e Gerenciamento de Tarefas** (`exibir_menu_tarefas` / `menu_cadastrar_tarefa`): Exibe as opções de gerenciamento de tarefas e coleta interativamente os dados necessários (descrição, prazo e prioridade) para criar uma nova tarefa.   
-**Gerenciamento de Subtarefas** (`exibir_menu_subtarefas`): Interface dedicada para incluir, remover e atualizar o progresso das sub-ações vinculadas a uma tarefa pai.  
-**Filtros e Ordenação**(`exibir_filtro`/ `menu_filtrar_tarefas`): Interface para filtrar e reorganizar a exibição das tarefas por critérios específicos, como nível de prioridade ou data limite. 
+* **Estruturas de Dados e Constantes** (`Data` / `Subtarefa` / `Tarefa` / `MAX_SUBTAREFAS` / `PRIORIDADE_*`): Define limites operacionais, níveis de prioridade e os tipos estruturados principais organizados em listas encadeadas com suporte a ponteiros dinâmicos.
+* **Manipulação e Validação de Datas** (`criar_data` / `validar_data` / `parse_data` / `comparar_datas` / `formatar_data`): Funções auxiliares para construção, validação no calendário, conversão, comparação e exibição de prazos limite.
+* **Gerenciamento de Tarefas** (`criar_tarefa` / `remover_tarefa` / `editar_tarefa` / `listar_tarefas`): Controla o ciclo de vida das tarefas principais, incluindo alocação, exclusão de nós, edição de atributos e exibição da lista global.
+* **Gerenciamento de Subtarefas** (`criar_sub` / `remover_sub` / `editar_sub` / `listar_sub`): Responsável por criar, remover, atualizar status/descrição e listar as sub-ações vinculadas à tarefa pai.
+* **Filtros, Busca e Ordenação** (`busca_ID` / `ordenacao_por_prioridade` / `ordenacao_por_prazo`): Localiza tarefas por ID único global e reordena a lista encadeada por nível de prioridade ou prazo.
+* **Cálculo Recursivo de Progresso** (`calculo_progresso` / `atualizaConclusao`): Percorre recursivamente as subtarefas vinculadas para calcular e atualizar o percentual de conclusão da tarefa principal.
+* **Gestão de Memória Dinâmica** (`liberar_subtarefas` / `liberar_todas_tarefas`): Desaloca a memória dinâmica (`free`) das listas encadeadas, prevenindo *memory leaks* durante a execução do sistema.
 
 
-### arquivos.h
+### `menu.h`
+* **Navegação e Menus Principais** (`exibir_menu_principal` / `exibir_menu_tarefas` / `exibir_menu_subtarefas` / `exibir_filtro` / `executar_opcao_principal`): Renderiza a interface no terminal, exibe as opções de menu e direciona o fluxo do sistema conforme a escolha do usuário.
+* **Formulários de Entrada de Dados** (`menu_cadastrar_tarefa` / `menu_adicionar_subtarefa` / `menu_atualizar_progresso_subtarefa` / `menu_exportar_agenda`): Coleta interativamente os dados do usuário para cadastro de tarefas, inclusão de sub-ações, atualização de status e exportação.
+* **Exibição e Formatação de Dados** (`mostrar_lista_tarefas` / `mostrar_detalhes_tarefa` / `exibir_mensagem`): Apresenta as listas de tarefas, detalha informações de um item específico e exibe mensagens de feedback ou alerta.
+* **Gerenciamento da Interface** (`limpar_tela` / `pausar_tela`): Controla a exibição visual limpando o console e pausando a tela até a interação do usuário.
+* **Leitura e Validação de Entrada** (`ler_string_segura` / `ler_inteiro`): Captura entradas do teclado, limpa o buffer de entrada e valida os tipos digitados para evitar erros no programa.
+
+
+## Como Compilar e Executar
+
+### Pré-requisitos
+* Compilador *GCC* instalado.
+* Utilitário *Make*.
+
+---
+
+###  Compilação
+
+*Opção 1: Usando o Makefile *
+Na raiz do projeto, execute o comando:
+```bash
+gcc -Iinclude src/*.c -o gerenciador_tarefas
+
+Após compilar, execute:
+
+no linux/macOS:
+
+./gerenciador_tarefas
+
+no Windows:
+
+.\gerenciador_tarefas.exe
+
+##  Instruções de Uso
+
+1. *Navegação pelo Menu:*
+   - Utilize o menu interativo no terminal digitando o número correspondente à opção desejada.
+
+2. *Gerenciamento de Tarefas:*
+   - Cadastre uma tarefa informando *Descrição, **Prazo (Dia/Mês/Ano)* e nível de *Prioridade* (1 - Baixa, 2 - Média, 3 - Alta).
+   - Visualize e organize a lista de tarefas aplicando filtros por nível de prioridade ou por data limite.
+
+3. *Gerenciamento de Subtarefas:*
+   - Vincule até 10 subtarefas a uma tarefa pai existente.
+   - Atualize o status de conclusão de uma subtarefa para que o percentual de progresso da tarefa pai seja calculado e atualizado automaticamente de forma recursiva.
+
+4. *Persistência de Dados e Exportação:*
+   - Salve suas tarefas para mantê-las registradas no arquivo de dados.
+   - Utilize a opção de carregar ao iniciar o sistema para restaurar as tarefas salvas anteriormente.
+   - Exporte a agenda de um dia específico para gerar um relatório formatado em arquivo de texto (.txt).
