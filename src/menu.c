@@ -134,7 +134,7 @@ void exibir_menu_subtarefas(Tarefa** lista_geral){
 
         switch (opcao) {
             case 1:
-                menu_adicionau_subtarefa(lista_geral);
+                menu_adicionar_subtarefa(lista_geral);
                 break;
             case 2:
                 menu_editar_subtarefa(lista_geral);
