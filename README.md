@@ -106,7 +106,7 @@ no Windows:
    - Utilize o menu interativo no terminal digitando o número correspondente à opção desejada.
 
 #### 2. Gerenciamento de Tarefas:
-   - Cadastre uma tarefa informando *Descrição, **Prazo (Dia/Mês/Ano)* e nível de *Prioridade* (1 - Baixa, 2 - Média, 3 - Alta).
+   - Cadastre uma tarefa informando `Descrição`, `Prazo` (Dia/Mês/Ano) e nível de `Prioridade` (1 - Baixa, 2 - Média, 3 - Alta).
    - Visualize e organize a lista de tarefas aplicando filtros por nível de prioridade ou por data limite.
 
 #### 3. *Gerenciamento de Subtarefas:*
