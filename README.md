@@ -85,35 +85,35 @@ recursividade-em-c/
 
 ###  Compilação
 
-*Opção 1: Usando o Makefile *
+#### Opção 1: Usando o Makefile 
 Na raiz do projeto, execute o comando:
-```bash
-gcc -Iinclude src/*.c -o gerenciador_tarefas
+` ```bash
+gcc -Iinclude src/*.c -o gerenciador_tarefas `
 
 Após compilar, execute:
 
 no linux/macOS:
 
-./gerenciador_tarefas
+`./gerenciador_tarefas`
 
 no Windows:
 
-.\gerenciador_tarefas.exe
+`.\gerenciador_tarefas.exe`
 
 ##  Instruções de Uso
 
-1. *Navegação pelo Menu:*
+#### 1. Navegação pelo Menu:
    - Utilize o menu interativo no terminal digitando o número correspondente à opção desejada.
 
-2. *Gerenciamento de Tarefas:*
+#### 2. Gerenciamento de Tarefas:
    - Cadastre uma tarefa informando *Descrição, **Prazo (Dia/Mês/Ano)* e nível de *Prioridade* (1 - Baixa, 2 - Média, 3 - Alta).
    - Visualize e organize a lista de tarefas aplicando filtros por nível de prioridade ou por data limite.
 
-3. *Gerenciamento de Subtarefas:*
+#### 3. *Gerenciamento de Subtarefas:*
    - Vincule até 10 subtarefas a uma tarefa pai existente.
    - Atualize o status de conclusão de uma subtarefa para que o percentual de progresso da tarefa pai seja calculado e atualizado automaticamente de forma recursiva.
 
-4. *Persistência de Dados e Exportação:*
+#### 4. *Persistência de Dados e Exportação:*
    - Salve suas tarefas para mantê-las registradas no arquivo de dados.
    - Utilize a opção de carregar ao iniciar o sistema para restaurar as tarefas salvas anteriormente.
    - Exporte a agenda de um dia específico para gerar um relatório formatado em arquivo de texto (.txt).
