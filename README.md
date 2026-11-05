@@ -79,7 +79,7 @@ recursividade-em-c/
 
 ### Pré-requisitos
 * Compilador *GCC* instalado.
-* Utilitário *Make*.
+* Utilitário *Make* (se for usar comandos "make").
 
 ---
 
