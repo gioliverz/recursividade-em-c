@@ -1,24 +1,7 @@
-/**
- * ============================================================================
- * PROJETO PRÁTICO INTEGRADOR — TEMA T5: Gerenciador de Tarefas com Subtarefas
- * Diretório: recursividade-em-c/src/tarefas.c
- * Módulo 2: Implementação da Lógica de Negócios, Listas Encadeadas e Recursão
- * ============================================================================
- */
-
-#ifdef __has_include
-  #if __has_include("../include/tarefas.h")
-    #include "../include/tarefas.h"
-  #else
-    #include "tarefas.h"
-  #endif
-#else
-  #include "../include/tarefas.h"
-#endif
-
-/* ============================================================================
- * FUNÇÕES AUXILIARES DE DATAS
- * ============================================================================ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "tarefas.h"
 
 Data criar_data(int dia, int mes, int ano) {
     Data d;

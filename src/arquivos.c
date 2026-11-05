@@ -1,60 +1,14 @@
-/**
- * ============================================================================
- * PROJETO PRÁTICO INTEGRADOR — TEMA T5: Gerenciador de Tarefas com Subtarefas
- * Diretório: recursividade-em-c/src/arquivos.c
- * Módulo 3: Implementação da Persistência Binária e Exportação de Relatórios
- * ============================================================================
- */
+#include <stdio.h>
+#include <stdlib.h>
+#include "arquivos.h"
 
-#ifdef __has_include
-  #if __has_include("../include/arquivos.h")
-    #include "../include/arquivos.h"
-  #else
-    #include "arquivos.h"
-  #endif
-#else
-  #include "../include/arquivos.h"
-#endif
-
-int verificar_existencia_arquivo(const char* nome_arquivo) {
-    if (nome_arquivo == NULL) return 0;
-    FILE* fp = fopen(nome_arquivo, "rb");
-    if (fp != NULL) {
-        fclose(fp);
-        return 1;
-    }
-    return 0;
-}
-
-void formatar_nome_arquivo_agenda(const char* data_entrada, char* buffer, int tamanho_buffer) {
-    if (data_entrada == NULL || buffer == NULL || tamanho_buffer == 0) return;
-
-    Data d = parse_data(data_entrada);
-    snprintf(buffer, tamanho_buffer, "agenda_%04d-%02d-%02d.txt", d.ano, d.mes, d.dia);
-}
-
-int guardar_tarefas_binario(const Tarefa* lista, const char* nome_arquivo) {
-    if (nome_arquivo == NULL) {
-        return 0;
+int salvar_tarefas_binario(const char* nome_arquivo, const Tarefa* lista) {
+    FILE* arq = fopen(nome_arquivo, "wb");
+    if (arq == NULL) {
+        perror("Erro ao abrir arquivo binario para escrita");
+        return 0; // Falha na abertura
     }
 
-    FILE* fp = fopen(nome_arquivo, "wb");
-    if (fp == NULL) {
-        perror("Erro ao abrir arquivo para escrita binaria");
-        return 0;
-    }
-
-    // 1. Escreve cabeçalho de integridade e versão
-    char magic[5] = MAGIC_HEADER;
-    int versao = VERSAO_ARQUIVO;
-    if (fwrite(magic, sizeof(char), 4, fp) != 4 ||
-        fwrite(&versao, sizeof(int), 1, fp) != 1) {
-        fclose(fp);
-        return 0;
-    }
-
-    // 2. Conta o número total de tarefas na lista ligada
-    int total_tarefas = 0;
     const Tarefa* t = lista;
     while (t != NULL) {
         total_tarefas++;
