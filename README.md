@@ -45,7 +45,7 @@ recursividade-em-c/
 └── README.md           # Documentação do projeto
 ```
 
-##  Regras de Negócio e Estrutura de Dados
+
 
 ### Estruturas Principais 
 ### `tarefas.h`
