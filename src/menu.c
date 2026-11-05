@@ -26,7 +26,7 @@ int exibir_menu_principal(void) {
 }
 
 // --- Executar opção do menu principal ---
-void executar_opcao_principal(int opcao, Tarefa** lista_geral) {
+void executar_opcao_principal(Tarefa** lista_geral, int opcao) {
     switch (opcao) {
         case 1:
             exibir_menu_tarefas(lista_geral);
