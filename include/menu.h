@@ -30,8 +30,8 @@ void menu_exportar_agenda(Tarefa* lista);
 
 /* Exibição e Formatação de Dados */
 const char* obter_texto_prioridade(int prioridade);
-void mostrar_lista_tarefas(const Tarefa* lista);
-void mostrar_detalhes_tarefa(const Tarefa* lista);
+void mostrar_lista_tarefas(const Tarefa** lista_geral);
+void mostrar_detalhes_tarefa(Tarefa** lista_geral);
 void exibir_mensagem(const char* mensagem);
 
 /* Gerenciamento da Interface */

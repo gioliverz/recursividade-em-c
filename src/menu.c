@@ -137,7 +137,7 @@ void exibir_menu_subtarefas(Tarefa** lista_geral){
                 menu_adicionar_subtarefa(lista_geral);
                 break;
             case 2:
-                menu_editar_subtarefa(lista_geral);
+                menu_atualizar_subtarefa(lista_geral);
                 break;
             case 3: {       // chaves para criar escopo local (variáveis id_pai e id_sub)
                 limpar_tela();
@@ -181,7 +181,7 @@ void exibir_filtro(Tarefa** lista_geral){
             pausar_tela();
             break;
         case 2:
-            ordenacao_por_prazo(lista_geral);
+            ordenarcao_por_prazo(lista_geral);
             exibir_mensagem("Lista ordenada por prazo com sucesso!");
             pausar_tela();
             break;
@@ -300,18 +300,13 @@ void menu_atualizar_subtarefa(Tarefa** lista_geral){
     pausar_tela();
 }
 
-void mostrar_detalhes_tarefa(const Tarefa* lista){
+void mostrar_detalhes_tarefa(Tarefa** lista_geral){
     limpar_tela();
-    if (lista == NULL) {
-        exibir_mensagem("Nenhuma tarefa cadastrada.\n");
-        pausar_tela();
-        return;
-    }
     int id;
     printf("Digite o ID da tarefa que deseja visualizar: ");
     scanf(" %d", &id);
 
-    const Tarefa* t = busca_ID((Tarefa*)lista, id);
+    Tarefa* t = busca_ID(*lista_geral, id);
     if (t == NULL) {
         exibir_mensagem("Erro: Tarefa nao localizada.");
         pausar_tela();
@@ -372,7 +367,7 @@ void menu_exportar_agenda(Tarefa* lista){
     }
     // formatação segura do nome do arquivo
     sprintf(nome_arquivo_saida,"agenda_%04d-%02d-%02d.txt",data_busca.ano,data_busca.mes,data_busca.dia);
-    const char data_busca_string[11];
+    char data_busca_string[11];
     sprintf(data_busca_string,"%02d/%02d/%04d",data_busca.dia,data_busca.mes,data_busca.ano);
     printf("\nGerando relatorio em: %s ...\n",nome_arquivo_saida);
     int sucesso = exportar_agenda_dia_txt(lista,data_busca_string,nome_arquivo_saida);
@@ -394,17 +389,17 @@ const char* obter_texto_prioridade(int prioridade) {
     }
 }
 
-void mostrar_lista_tarefas(const Tarefa* lista) {
+void mostrar_lista_tarefas(const Tarefa** lista_geral) {
     limpar_tela();
     printf("============================================================\n");
     printf("              LISTA DE TAREFAS E SUBTAREFAS                 \n");
     printf("============================================================\n");
-    if (lista == NULL) { 
+    if (lista_geral == NULL || *lista_geral == NULL) {      // Verifica se o ponteiro duplo é nulo ou se a lista está vazia 
         printf("\nNenhuma tarefa cadastrada no momento.\n");
         pausar_tela();
         return;
     }
-    const Tarefa* atual = lista;
+    const Tarefa* atual = *lista_geral;
     while (atual != NULL) {
         printf("\n[ID: %d] %s\n",atual->id,atual->descricao);
         printf("    Prazo: %02d/%02d/%04d | Prioridade: %s | Progresso: %.1f%%\n",
