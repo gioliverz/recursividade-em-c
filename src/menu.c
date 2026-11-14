@@ -300,13 +300,18 @@ void menu_atualizar_subtarefa(Tarefa** lista_geral){
     pausar_tela();
 }
 
-void mostrar_detalhes_tarefa(Tarefa** lista_geral){
+void mostrar_detalhes_tarefa(const Tarefa* lista){
     limpar_tela();
+    if (lista == NULL) {
+        exibir_mensagem("Nenhuma tarefa cadastrada.\n");
+        pausar_tela();
+        return;
+    }
     int id;
     printf("Digite o ID da tarefa que deseja visualizar: ");
     scanf(" %d", &id);
 
-    Tarefa* t = busca_ID(*lista_geral, id);
+    const Tarefa* t = busca_ID((Tarefa*)lista, id);
     if (t == NULL) {
         exibir_mensagem("Erro: Tarefa nao localizada.");
         pausar_tela();
@@ -325,6 +330,17 @@ void mostrar_detalhes_tarefa(Tarefa** lista_geral){
     printf("Progresso Atual: %.1f%%\n",t->percentual_conclusao);
     printf("Quantidade de Subtarefas: %d\n",t->qtd_subtarefas);
     printf("==========================================\n");
+    
+    if (t->subtarefas != NULL && t->qtd_subtarefas > 0) {
+        printf("Subtarefas Vinculadas:\n");
+        const Subtarefa* sub = t->subtarefas;
+        while (sub != NULL) {
+            char status = (sub->concluida == 1) ? 'X' : ' ';
+            printf(" [%c] ID %d: %s\n",status,sub->id,sub->descricao);
+            sub = sub->proxima;
+        }
+    }
+    printf("==================================================\n");
     pausar_tela();
 }
 
@@ -364,6 +380,48 @@ void menu_exportar_agenda(Tarefa* lista){
         exibir_mensagem("Agenda exportada com sucesso!");
     } else {
         exibir_mensagem("Erro ao criar ou gravar o arquivo exportado.");
+    }
+    pausar_tela();
+}
+
+// Função auxiliar interna para traduzir a prioridade usando as constantes definidas
+const char* obter_texto_prioridade(int prioridade) {
+    switch (prioridade) {
+        case PRIORIDADE_BAIXA: return "BAIXA";
+        case PRIORIDADE_MEDIA: return "MEDIA";
+        case PRIORIDADE_ALTA: return "ALTA";
+        default: return "INDEFINIDA";
+    }
+}
+
+void mostrar_lista_tarefas(const Tarefa* lista) {
+    limpar_tela();
+    printf("============================================================\n");
+    printf("              LISTA DE TAREFAS E SUBTAREFAS                 \n");
+    printf("============================================================\n");
+    if (lista == NULL) { 
+        printf("\nNenhuma tarefa cadastrada no momento.\n");
+        pausar_tela();
+        return;
+    }
+    const Tarefa* atual = lista;
+    while (atual != NULL) {
+        printf("\n[ID: %d] %s\n",atual->id,atual->descricao);
+        printf("    Prazo: %02d/%02d/%04d | Prioridade: %s | Progresso: %.1f%%\n",
+            atual->prazo.dia,atual->prazo.mes,atual->prazo.ano,obter_texto_prioridade(atual->prioridade),atual->percentual_conclusao);
+        if (atual->subtarefas == NULL || atual->qtd_subtarefas == 0) {
+            printf("    -> Nenhuma subtarefa cadastrada.\n");
+        } else {
+            printf("    -> Subtarefas (%d/%d):\n",atual->qtd_subtarefas,MAX_SUBTAREFAS);
+            const Subtarefa* sub_atual = atual->subtarefas;
+            while (sub_atual != NULL) {
+                char status = (sub_atual->concluida ==1) ? 'X' : ' ';
+                printf("    [%c] Sub-ID %d: %s\n",status,sub_atual->id,sub_atual->descricao);
+                sub_atual = sub_atual->proxima;
+            }
+        }
+        printf("------------------------------------------------------------\n");
+        atual = atual->proxima;
     }
     pausar_tela();
 }

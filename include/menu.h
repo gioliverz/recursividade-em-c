@@ -16,29 +16,27 @@
 #include "arquivos.h"
 
 /* Navegação e Menus Principais */
-void exibir_menu_principal(void);
-void exibir_menu_tarefas(void);
-void exibir_menu_subtarefas(void);
-void exibir_filtro(void);
+int exibir_menu_principal(void);
+void exibir_menu_tarefas(Tarefa** lista_geral);
+void exibir_menu_subtarefas(Tarefa** lista_geral);
+void exibir_filtro(Tarefa** lista_geral);
 void executar_opcao_principal(Tarefa** lista_geral, int opcao);
 
 /* Formulários de Entrada de Dados */
 void menu_cadastrar_tarefa(Tarefa** lista_geral);
-void menu_adicionar_subtarefa(Tarefa* lista);
-void menu_atualizar_progresso_subtarefa(Tarefa* lista);
+void menu_adicionar_subtarefa(Tarefa** lista_geral);
+void menu_atualizar_subtarefa(Tarefa** lista);
 void menu_exportar_agenda(Tarefa* lista);
 
 /* Exibição e Formatação de Dados */
+const char* obter_texto_prioridade(int prioridade);
 void mostrar_lista_tarefas(const Tarefa* lista);
-void mostrar_detalhes_tarefa(Tarefa** lista_global, int id);
+void mostrar_detalhes_tarefa(const Tarefa* lista);
 void exibir_mensagem(const char* mensagem);
 
 /* Gerenciamento da Interface */
 void limpar_tela(void);
 void pausar_tela(void);
-
-/* Leitura e Validação de Entrada de Teclado */
-void ler_string_segura(char* buffer, int tamanho);
-int ler_inteiro(const char* rotulo);
+void exibir_mensagem(const char* mensagem);
 
 #endif /* MENU_H */
